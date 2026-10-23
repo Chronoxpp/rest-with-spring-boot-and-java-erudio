@@ -15,18 +15,28 @@ public class MathController
     ) throws Exception
     {
         if (! isNumeric(numberOne) || !isNumeric(numberTwo)) 
-            throw new IllegalArgumentException();
+            throw new UnsupportedOperationException("Please set a numeric value!");
         
         return convertToDouble(numberOne) + convertToDouble(numberTwo);
     }
 
-    private Double convertToDouble(String number)
+    private Double convertToDouble(String text) throws IllegalArgumentException
     {
-        return 1D;
+        if (text == null || text.isBlank())
+            throw new UnsupportedOperationException("Please set a numeric value!");;
+
+        String textFormated = text.replace(",", ".");
+
+        return Double.parseDouble(textFormated);
     }
 
-    private boolean isNumeric(String number)
+    private boolean isNumeric(String text)
     {
-        return true;
+        if (text == null || text.isBlank())
+            return false;
+
+        String textFormated = text.replace(",", ".");
+
+        return textFormated.matches("[-+]?[0-9]*\\.?[0-9]+");
     }
 }
