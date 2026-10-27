@@ -3,17 +3,18 @@ package br.com.dourado.services;
 import br.com.dourado.exception.ResourceNotFoundException;
 import br.com.dourado.model.Person;
 import br.com.dourado.repository.PersonRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Logger;
 
 @Service
 public class PersonServices
 {
     private final AtomicLong counter = new AtomicLong();
-    private final Logger logger = Logger.getLogger(PersonServices.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(PersonServices.class.getName());
 
     private PersonRepository repository;
 
