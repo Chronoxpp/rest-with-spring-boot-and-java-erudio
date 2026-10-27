@@ -1,6 +1,6 @@
 package br.com.dourado.controllers;
 
-import br.com.dourado.PersonServices;
+import br.com.dourado.services.PersonServices;
 import br.com.dourado.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -27,7 +27,7 @@ public class PersonContoller
         value = "/{id}",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Person findById(@PathVariable("id") String id)
+    public Person findById(@PathVariable("id") long id)
     {
         return service.findById(id);
     }
@@ -54,7 +54,7 @@ public class PersonContoller
     @DeleteMapping(
       value = "/{id}"
     )
-    public void delete(@PathVariable("id") String id)
+    public void delete(@PathVariable("id") long id)
     {
         service.delete(id);
     }
