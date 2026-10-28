@@ -1,6 +1,7 @@
 package br.com.dourado.services;
 
-import br.com.dourado.data.dto.PersonDTO;
+import br.com.dourado.data.dto.v1.PersonDTO;
+import br.com.dourado.data.dto.v2.PersonDTOV2;
 import br.com.dourado.exception.ResourceNotFoundException;
 import br.com.dourado.model.Person;
 import br.com.dourado.repository.PersonRepository;
@@ -54,6 +55,15 @@ public class PersonServices
         var newPerson = parseObject(personDto, Person.class);
 
         return parseObject(repository.save(newPerson), PersonDTO.class);
+    }
+
+    public PersonDTOV2 createV2(PersonDTOV2 personDto)
+    {
+        logger.info("Create one person");
+
+        var newPerson = parseObject(personDto, Person.class);
+
+        return parseObject(repository.save(newPerson), PersonDTOV2.class);
     }
 
     public PersonDTO update(PersonDTO personDto)

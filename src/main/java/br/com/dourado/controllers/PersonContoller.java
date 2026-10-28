@@ -1,6 +1,7 @@
 package br.com.dourado.controllers;
 
-import br.com.dourado.data.dto.PersonDTO;
+import br.com.dourado.data.dto.v1.PersonDTO;
+import br.com.dourado.data.dto.v2.PersonDTOV2;
 import br.com.dourado.services.PersonServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -40,6 +41,16 @@ public class PersonContoller
     public PersonDTO create(@RequestBody PersonDTO personDto)
     {
         return service.create(personDto);
+    }
+
+    @PostMapping(
+      name = "/v2",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public PersonDTOV2 create(@RequestBody PersonDTOV2 personDto)
+    {
+        return service.createV2(personDto);
     }
 
     @PutMapping(

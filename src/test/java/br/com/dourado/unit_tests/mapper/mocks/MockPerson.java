@@ -1,6 +1,6 @@
 package br.com.dourado.unit_tests.mapper.mocks;
 
-import br.com.dourado.data.dto.PersonDTO;
+import br.com.dourado.data.dto.v1.PersonDTO;
 import br.com.dourado.model.Person;
 
 import java.util.ArrayList;
