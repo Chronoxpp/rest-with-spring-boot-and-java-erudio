@@ -13,6 +13,7 @@ public class PersonMapper
   {
     PersonDTOV2 dto = new PersonDTOV2();
 
+    dto.setId(person.getId());
     dto.setFirstName(person.getFirstName());
     dto.setLastName(person.getLastName());
     dto.setBirthDay(new Date());
@@ -26,6 +27,7 @@ public class PersonMapper
   {
     Person person = new Person();
 
+    person.setId(personDto.getId());
     person.setFirstName(personDto.getFirstName());
     person.setLastName(personDto.getLastName());
     person.setAddress(personDto.getAddress());
