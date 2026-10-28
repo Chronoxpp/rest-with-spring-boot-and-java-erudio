@@ -3,10 +3,12 @@ package br.com.dourado.services;
 import br.com.dourado.data.dto.v1.PersonDTO;
 import br.com.dourado.data.dto.v2.PersonDTOV2;
 import br.com.dourado.exception.ResourceNotFoundException;
+import br.com.dourado.mapper.custom.PersonMapper;
 import br.com.dourado.model.Person;
 import br.com.dourado.repository.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +25,11 @@ public class PersonServices
     private final AtomicLong counter = new AtomicLong();
     private final Logger logger = LoggerFactory.getLogger(PersonServices.class.getName());
 
+    @Autowired
     private PersonRepository repository;
+
+    @Autowired
+    private PersonMapper personMapper;
 
     public PersonServices(final PersonRepository repository)
     {
@@ -61,9 +67,9 @@ public class PersonServices
     {
         logger.info("Create one person");
 
-        var newPerson = parseObject(personDto, Person.class);
+        var newPerson = personMapper.toEntity(personDto);
 
-        return parseObject(repository.save(newPerson), PersonDTOV2.class);
+        return personMapper.toDTO(repository.save(newPerson));
     }
 
     public PersonDTO update(PersonDTO personDto)
