@@ -1,5 +1,6 @@
 package br.com.dourado.services;
 
+import br.com.dourado.data.dto.PersonDTO;
 import br.com.dourado.exception.ResourceNotFoundException;
 import br.com.dourado.model.Person;
 import br.com.dourado.repository.PersonRepository;
@@ -9,6 +10,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
+import static br.com.dourado.mapper.ObjectMapper.parseListObjects;
+import static br.com.dourado.mapper.ObjectMapper.parseObject;
+
+;
 
 @Service
 public class PersonServices
@@ -23,44 +29,48 @@ public class PersonServices
         this.repository = repository;
     }
 
-    public List<Person> findAll()
+    public List<PersonDTO> findAll()
     {
         logger.info("Finding all persons");
 
-        return repository.findAll();
+        return parseListObjects(repository.findAll(), PersonDTO.class);
     }
 
-    public Person findById(long id)
+    public PersonDTO findById(long id)
     {
         logger.info("Finding Person with id: " + id);
 
-        return repository
+        var entity = repository
           .findById(id)
           .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+
+        return parseObject(entity, PersonDTO.class);
     }
 
-    public Person create(Person person)
+    public PersonDTO create(PersonDTO personDto)
     {
         logger.info("Create one person");
 
-        return repository.save(person);
+        var newPerson = parseObject(personDto, Person.class);
+
+        return parseObject(repository.save(newPerson), PersonDTO.class);
     }
 
-    public Person update(Person person)
+    public PersonDTO update(PersonDTO personDto)
     {
         logger.info("Update one person");
 
         Person personStored = repository
-          .findById(person.getId())
+          .findById(personDto.getId())
           .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 
-        personStored.setId(person.getId());
-        personStored.setFirstName(person.getFirstName());
-        personStored.setLastName(person.getLastName());
-        personStored.setAddress(person.getAddress());
-        personStored.setGender(person.getGender());
+        personStored.setId(personDto.getId());
+        personStored.setFirstName(personDto.getFirstName());
+        personStored.setLastName(personDto.getLastName());
+        personStored.setAddress(personDto.getAddress());
+        personStored.setGender(personDto.getGender());
 
-        return repository.save(person);
+        return parseObject(repository.save(personStored), PersonDTO.class);
     }
 
     public void delete(long id)

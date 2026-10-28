@@ -1,7 +1,7 @@
 package br.com.dourado.controllers;
 
+import br.com.dourado.data.dto.PersonDTO;
 import br.com.dourado.services.PersonServices;
-import br.com.dourado.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class PersonContoller
     @GetMapping(
       produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<Person> findAll()
+    public List<PersonDTO> findAll()
     {
         return service.findAll();
     }
@@ -28,7 +28,7 @@ public class PersonContoller
         value = "/{id}",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Person findById(@PathVariable("id") long id)
+    public PersonDTO findById(@PathVariable("id") long id)
     {
         return service.findById(id);
     }
@@ -37,9 +37,9 @@ public class PersonContoller
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Person create(@RequestBody Person person)
+    public PersonDTO create(@RequestBody PersonDTO personDto)
     {
-        return service.create(person);
+        return service.create(personDto);
     }
 
     @PutMapping(
@@ -47,9 +47,9 @@ public class PersonContoller
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Person update(@RequestBody Person person)
+    public PersonDTO update(@RequestBody PersonDTO personDto)
     {
-        return service.update(person);
+        return service.update(personDto);
     }
 
     @DeleteMapping(
