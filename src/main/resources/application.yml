@@ -9,9 +9,11 @@ spring:
     password: rootSeguro
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: false
     open-in-view: false
+  flyway:
+    enabled: true
 logging:
   level:
     br.com.dourado: DEBUG
