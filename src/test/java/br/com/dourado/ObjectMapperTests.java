@@ -1,6 +1,6 @@
 package br.com.dourado;
 
-import br.com.dourado.data.dto.v1.PersonDTO;
+import br.com.dourado.data.dto.PersonDTO;
 import br.com.dourado.model.Person;
 import br.com.dourado.unit_tests.mapper.mocks.MockPerson;
 import org.junit.jupiter.api.BeforeEach;
