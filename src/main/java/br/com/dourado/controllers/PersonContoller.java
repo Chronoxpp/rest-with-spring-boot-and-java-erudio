@@ -33,6 +33,10 @@ public class PersonContoller
     {
         var person  = service.findById(id);
         person.setBirthDay(new Date());
+//        person.setPhoneNumber("+55(66)99678-1354");
+        person.setPhoneNumber("");
+        person.setLastName(null);
+        person.setSensitiveData("Foo Bar");
 
         return person;
     }
