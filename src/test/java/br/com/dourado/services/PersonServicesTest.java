@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -356,6 +357,12 @@ public class PersonServicesTest
   @Test
   void findAll()
   {
+    List<Person> list = input.mockEntityList();
+    when(repository.findAll()).thenReturn(list);
 
+    List<PersonDTO> persons = service.findAll();
+
+    assertNotNull(persons);
+    assertEquals(14, persons.size());
   }
 }
