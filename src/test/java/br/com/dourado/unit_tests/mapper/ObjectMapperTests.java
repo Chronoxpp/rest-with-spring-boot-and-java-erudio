@@ -1,4 +1,4 @@
-package br.com.dourado;
+package br.com.dourado.unit_tests.mapper;
 
 import br.com.dourado.data.dto.PersonDTO;
 import br.com.dourado.model.Person;
