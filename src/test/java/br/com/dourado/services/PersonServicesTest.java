@@ -1,6 +1,7 @@
 package br.com.dourado.services;
 
 import br.com.dourado.data.dto.PersonDTO;
+import br.com.dourado.exception.RequiredObjectIsNullException;
 import br.com.dourado.model.Person;
 import br.com.dourado.repository.PersonRepository;
 import br.com.dourado.unit_tests.mapper.mocks.MockPerson;
@@ -220,6 +221,20 @@ public class PersonServicesTest
   }
 
   @Test
+  void testCreateWithNullPerson()
+  {
+    Exception exception = assertThrows(
+      RequiredObjectIsNullException.class,
+      () -> service.create(null)
+    );
+
+    String expectedMessage = "It is not allowed to persist a null object";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @Test
   void update()
   {
     Person person = input.mockEntity(1);
@@ -307,6 +322,20 @@ public class PersonServicesTest
       "Female",
       result.getGender()
     );
+  }
+
+  @Test
+  void testUpdateWithNullPerson()
+  {
+    Exception exception = assertThrows(
+      RequiredObjectIsNullException.class,
+      () -> service.update(null)
+    );
+
+    String expectedMessage = "It is not allowed to persist a null object";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
   }
 
   @Test
