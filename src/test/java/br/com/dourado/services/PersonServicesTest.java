@@ -364,5 +364,161 @@ public class PersonServicesTest
 
     assertNotNull(persons);
     assertEquals(14, persons.size());
+
+    //
+
+    var personOne = persons.get(1);
+
+    assertNotNull(personOne);
+    assertNotNull(personOne.getId());
+    assertNotNull(personOne.getLinks());
+
+    assertNotNull(
+      personOne.getLinks()
+        .stream()
+        .anyMatch(
+          link -> link.getRel().value().equals("self")
+            && link.getHref().endsWith("/api/person/v1/1")
+            && link.getType().equals("GET")
+        )
+    );
+
+    assertNotNull(
+      personOne.getLinks()
+        .stream()
+        .anyMatch(
+          link -> link.getRel().value().equals("findAll")
+            && link.getHref().endsWith("/api/person/v1")
+            && link.getType().equals("GET")
+        )
+    );
+
+    assertNotNull(
+      personOne.getLinks()
+        .stream()
+        .anyMatch(
+          link -> link.getRel().value().equals("create")
+            && link.getHref().endsWith("/api/person/v1")
+            && link.getType().equals("POST")
+        )
+    );
+
+    assertNotNull(
+      personOne.getLinks()
+        .stream()
+        .anyMatch(
+          link -> link.getRel().value().equals("update")
+            && link.getHref().endsWith("/api/person/v1")
+            && link.getType().equals("PUT")
+        )
+    );
+
+    assertNotNull(
+      personOne.getLinks()
+        .stream()
+        .anyMatch(
+          link -> link.getRel().value().equals("delete")
+            && link.getHref().endsWith("/api/person/v1/1")
+            && link.getType().equals("DELETE")
+        )
+    );
+
+    assertEquals(
+      "Address Test1",
+      personOne.getAddress()
+    );
+
+    assertEquals(
+      "First Name Test1",
+      personOne.getFirstName()
+    );
+
+    assertEquals(
+      "Last Name Test1",
+      personOne.getLastName()
+    );
+
+    assertEquals(
+      "Female",
+      personOne.getGender()
+    );
+
+    //
+
+    var personFour = persons.get(4);
+
+    assertNotNull(personFour);
+    assertNotNull(personFour.getId());
+    assertNotNull(personFour.getLinks());
+
+    assertNotNull(
+      personFour.getLinks()
+        .stream()
+        .anyMatch(
+          link -> link.getRel().value().equals("self")
+            && link.getHref().endsWith("/api/person/v1/4")
+            && link.getType().equals("GET")
+        )
+    );
+
+    assertNotNull(
+      personFour.getLinks()
+        .stream()
+        .anyMatch(
+          link -> link.getRel().value().equals("findAll")
+            && link.getHref().endsWith("/api/person/v1")
+            && link.getType().equals("GET")
+        )
+    );
+
+    assertNotNull(
+      personFour.getLinks()
+        .stream()
+        .anyMatch(
+          link -> link.getRel().value().equals("create")
+            && link.getHref().endsWith("/api/person/v1")
+            && link.getType().equals("POST")
+        )
+    );
+
+    assertNotNull(
+      personFour.getLinks()
+        .stream()
+        .anyMatch(
+          link -> link.getRel().value().equals("update")
+            && link.getHref().endsWith("/api/person/v1")
+            && link.getType().equals("PUT")
+        )
+    );
+
+    assertNotNull(
+      personFour.getLinks()
+        .stream()
+        .anyMatch(
+          link -> link.getRel().value().equals("delete")
+            && link.getHref().endsWith("/api/person/v1/4")
+            && link.getType().equals("DELETE")
+        )
+    );
+
+    assertEquals(
+      "Address Test4",
+      personFour.getAddress()
+    );
+
+    assertEquals(
+      "First Name Test4",
+      personFour.getFirstName()
+    );
+
+    assertEquals(
+      "Last Name Test4",
+      personFour.getLastName()
+    );
+
+    assertEquals(
+      "Male",
+      personFour.getGender()
+    );
   }
 }
