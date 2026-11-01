@@ -8,4 +8,6 @@ import java.util.List;
 public interface BookRepositoryInterface
 {
   public List<Book> findAll();
+
+  public Book findById(long id);
 }

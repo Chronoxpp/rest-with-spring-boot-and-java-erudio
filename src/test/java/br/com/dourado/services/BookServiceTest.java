@@ -1,6 +1,7 @@
 package br.com.dourado.services;
 
 import br.com.dourado.data.dto.BookDTO;
+import br.com.dourado.exception.ResourceNotFoundException;
 import br.com.dourado.model.Book;
 import br.com.dourado.repository.BookRepositoryInterface;
 import org.junit.jupiter.api.DisplayName;
@@ -11,11 +12,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,79 +38,52 @@ public class BookServiceTest
     List<Book> books = criarListaLivros();
     when(bookRepository.findAll()).thenReturn(books);
 
-    List<BookDTO> expectedBooks = criarListaLivrosDTO();
-
     //When
     List<BookDTO> actualBooks = service.findAll();
 
     //Then
-    assertIterableEquals(
-      expectedBooks,
-      actualBooks,
-      () -> "A lista de livros recebida não possui os mesmo itens da lista esperada OU os itens da lista recebida estão fora da ordem esperada."
+    assertThat(actualBooks)
+      .extracting(
+        BookDTO::getId,
+        BookDTO::getAuthor,
+        BookDTO::getTitle,
+        BookDTO::getLaunchDate,
+        BookDTO::getPrice
+      ).containsExactlyInAnyOrder(
+        tuple(1L, "Fulano", "As aventuras de...",
+          LocalDate.of(2026, 1, 15), 50D),
+        tuple(2L, "Beltrano", "O terror de...",
+          LocalDate.of(2026, 2, 15), 100D),
+        tuple(3L, "Ciclano", "Vivendo sob uma...",
+          LocalDate.of(2026, 3, 15), 150.15D)
+      );
+  }
+
+  private List<Book> criarListaLivros()
+  {
+    return List.of(
+      new Book(
+        1L,
+        "Fulano",
+        "As aventuras de...",
+        LocalDate.of(2026, 1, 15),
+        50D
+      ),
+      new Book(
+        2L,
+        "Beltrano",
+        "O terror de...",
+        LocalDate.of(2026, 2, 15),
+        100D
+      ),
+      new Book(
+        3L,
+        "Ciclano",
+        "Vivendo sob uma...",
+        LocalDate.of(2026, 3, 15),
+        150.15D
+      )
     );
-  }
-
-  List<Book> criarListaLivros()
-  {
-    Book book1 = new Book();
-    book1.setId(1);
-    book1.setAuthor("Fulano");
-    book1.setLaunchDate(LocalDate.of(2026, 1, 15));
-    book1.setPrice(50D);
-    book1.setTitle("As aventuras de...");
-
-    Book book2 = new Book();
-    book2.setId(2);
-    book2.setAuthor("Beltrano");
-    book2.setLaunchDate(LocalDate.of(2026, 2, 15));
-    book2.setPrice(100D);
-    book2.setTitle("O terror de...");
-
-    Book book3 = new Book();
-    book3.setId(3);
-    book3.setAuthor("Ciclano");
-    book3.setLaunchDate(LocalDate.of(2026, 3, 15));
-    book3.setPrice(150.15D);
-    book3.setTitle("Vivendo sob uma...");
-
-    List<Book> expectedBooks = new ArrayList<>();
-    expectedBooks.add(book1);
-    expectedBooks.add(book2);
-    expectedBooks.add(book3);
-
-    return expectedBooks;
-  }
-
-  List<BookDTO> criarListaLivrosDTO()
-  {
-    BookDTO book1 = new BookDTO();
-    book1.setId(1);
-    book1.setAuthor("Fulano");
-    book1.setLaunchDate(LocalDate.of(2026, 1, 15));
-    book1.setPrice(50D);
-    book1.setTitle("As aventuras de...");
-
-    BookDTO book2 = new BookDTO();
-    book2.setId(2);
-    book2.setAuthor("Beltrano");
-    book2.setLaunchDate(LocalDate.of(2026, 2, 15));
-    book2.setPrice(100D);
-    book2.setTitle("O terror de...");
-
-    BookDTO book3 = new BookDTO();
-    book3.setId(3);
-    book3.setAuthor("Ciclano");
-    book3.setLaunchDate(LocalDate.of(2026, 3, 15));
-    book3.setPrice(150.15D);
-    book3.setTitle("Vivendo sob uma...");
-
-    List<BookDTO> expectedBooks = new ArrayList<>();
-    expectedBooks.add(book1);
-    expectedBooks.add(book2);
-    expectedBooks.add(book3);
-
-    return expectedBooks;
   }
 
   @Test
@@ -117,15 +91,59 @@ public class BookServiceTest
   void deveRetornarListaVaziaQuandoNaoExistiremLivros()
   {
     // Given
-    List<Book> books = new ArrayList<>();
-    when(bookRepository.findAll()).thenReturn(books);
-
-    List<BookDTO> expectedBooks = new ArrayList<>();
+    when(bookRepository.findAll()).thenReturn(List.of());
 
     // When
     List<BookDTO> actualBooks = service.findAll();
 
     // Then
-    assertEquals(expectedBooks, actualBooks);
+    assertThat(actualBooks).isEmpty();
+  }
+
+  @Test
+  @DisplayName("Deve retornar BookDTO quando livro existir")
+  void deveRetornarLivroDTOQuandoExistirLivro()
+  {
+    //Given
+    Book book = new Book(
+      1L,
+      "Fulano",
+      "As aventuras de...",
+      LocalDate.of(2026, 1, 15),
+      75.25D
+    );
+
+    when(bookRepository.findById(1L)).thenReturn(book);
+
+    //When
+    BookDTO actualBook = service.findById(1L);
+
+    //Then
+    assertThat(actualBook)
+      .isNotNull()
+      .satisfies(
+        dto ->
+        {
+          assertThat(dto.getId()).isEqualTo(1L);
+          assertThat(dto.getAuthor()).isEqualTo("Fulano");
+          assertThat(dto.getTitle()).isEqualTo("As aventuras de...");
+          assertThat(dto.getLaunchDate()).isEqualTo(LocalDate.of(2026, 1, 15));
+          assertThat(dto.getPrice()).isEqualTo(75.25D);
+        }
+      );
+  }
+
+  @Test
+  @DisplayName("Deve retornar exceção de livro não encontrado quando livro não existir")
+  void deveRetornarExcecaoLivroNaoEncontradoQuandoLivroNaoExistir()
+  {
+    //Given
+    long idInexistente = 999L;
+    when(bookRepository.findById(idInexistente)).thenReturn(null);
+
+    //When / Then
+    assertThatThrownBy(() -> service.findById(idInexistente))
+      .isInstanceOf(ResourceNotFoundException.class)
+      .hasMessage("Book not found.");
   }
 }
