@@ -146,12 +146,11 @@ public class BookServiceTest
       .hasMessage("Book not found.");
   }
 
-  // findAll, findById, create, update, delete
-
   @Test
   @DisplayName("Deve retornar livro cadastrado quando cadastro ocorrer com sucesso")
   void deveRetornarLivroCadastradoQuandoCadastroOcorrerComSucesso()
   {
+    //Given
     BookDTO expectedBook = new BookDTO(
       1L,
       "Fulano",
@@ -170,10 +169,44 @@ public class BookServiceTest
 
     when(bookRepository.create(any(Book.class))).thenReturn(bookPersisted);
 
+    //When
     BookDTO actualBook = service.create(new BookDTO());
 
+    //Then
     assertThat(actualBook)
-      .usingRecursiveAssertion()
+      .usingRecursiveComparison()
+      .isEqualTo(expectedBook);
+  }
+
+  @Test
+  @DisplayName("Deve retornar livro atualizado quando atualizacao ocorrer com sucesso")
+  void deveRetornarLivroAtualizadoQuandoAtualizacaoOcorrerComSucesso()
+  {
+    //Given
+    BookDTO expectedBook = new BookDTO(
+      1L,
+      "Fulano",
+      "As aventuras de...",
+      LocalDate.of(2026, 1, 15),
+      75.25D
+    );
+
+    Book bookPersisted = new Book(
+      1L,
+      "Fulano",
+      "As aventuras de...",
+      LocalDate.of(2026, 1, 15),
+      75.25D
+    );
+
+    when(bookRepository.update(any(Book.class))).thenReturn(bookPersisted);
+
+    //When
+    BookDTO actualBook = service.update(new BookDTO());
+
+    //Then
+    assertThat(actualBook)
+      .usingRecursiveComparison()
       .isEqualTo(expectedBook);
   }
 }

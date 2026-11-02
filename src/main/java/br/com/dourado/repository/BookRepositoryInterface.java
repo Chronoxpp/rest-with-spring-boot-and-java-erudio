@@ -12,4 +12,6 @@ public interface BookRepositoryInterface
   public Book findById(long id);
 
   public Book create(Book book);
+
+  public Book update(Book book);
 }

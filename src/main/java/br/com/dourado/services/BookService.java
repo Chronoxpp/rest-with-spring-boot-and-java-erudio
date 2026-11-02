@@ -44,4 +44,13 @@ public class BookService
 
     return parseObject(persistedBook, BookDTO.class);
   }
+
+  public BookDTO update(BookDTO bookDTO)
+  {
+    Book newBook = parseObject(bookDTO, Book.class);
+
+    Book updatedBook = repository.update(newBook);
+
+    return parseObject(updatedBook, BookDTO.class);
+  }
 }

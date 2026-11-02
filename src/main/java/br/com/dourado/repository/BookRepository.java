@@ -25,4 +25,10 @@ public class BookRepository implements BookRepositoryInterface
   {
     return book;
   }
+
+  @Override
+  public Book update(Book book)
+  {
+    return book;
+  }
 }
