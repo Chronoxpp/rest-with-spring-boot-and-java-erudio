@@ -3,7 +3,7 @@ package br.com.dourado.services;
 import br.com.dourado.data.dto.BookDTO;
 import br.com.dourado.exception.ResourceNotFoundException;
 import br.com.dourado.model.Book;
-import br.com.dourado.repository.BookRepositoryInterface;
+import br.com.dourado.repository.BookRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.when;
 public class BookServiceTest
 {
   @Mock
-  private BookRepositoryInterface bookRepository;
+  private BookRepository repository;
 
   @InjectMocks
   private BookService service;
@@ -35,7 +36,7 @@ public class BookServiceTest
   {
     //Given
     List<Book> books = criarListaLivros();
-    when(bookRepository.findAll()).thenReturn(books);
+    when(repository.findAll()).thenReturn(books);
 
     //When
     List<BookDTO> actualBooks = service.findAll();
@@ -64,23 +65,23 @@ public class BookServiceTest
       new Book(
         1L,
         "Fulano",
-        "As aventuras de...",
         LocalDate.of(2026, 1, 15),
-        50D
+        50D,
+        "As aventuras de..."
       ),
       new Book(
         2L,
         "Beltrano",
-        "O terror de...",
         LocalDate.of(2026, 2, 15),
-        100D
+        100D,
+        "O terror de..."
       ),
       new Book(
         3L,
         "Ciclano",
-        "Vivendo sob uma...",
         LocalDate.of(2026, 3, 15),
-        150.15D
+        150.15D,
+        "Vivendo sob uma..."
       )
     );
   }
@@ -90,7 +91,7 @@ public class BookServiceTest
   void deveRetornarListaVaziaQuandoNaoExistiremLivros()
   {
     // Given
-    when(bookRepository.findAll()).thenReturn(List.of());
+    when(repository.findAll()).thenReturn(List.of());
 
     // When
     List<BookDTO> actualBooks = service.findAll();
@@ -107,12 +108,12 @@ public class BookServiceTest
     Book book = new Book(
       1L,
       "Fulano",
-      "As aventuras de...",
       LocalDate.of(2026, 1, 15),
-      75.25D
+      75.25D,
+      "As aventuras de..."
     );
 
-    when(bookRepository.findById(1L)).thenReturn(book);
+    when(repository.findById(1L)).thenReturn(Optional.of(book));
 
     //When
     BookDTO actualBook = service.findById(1L);
@@ -138,7 +139,7 @@ public class BookServiceTest
   {
     //Given
     long idInexistente = 999L;
-    when(bookRepository.findById(idInexistente)).thenReturn(null);
+    when(repository.findById(idInexistente)).thenReturn(Optional.empty());
 
     //When / Then
     assertThatThrownBy(() -> service.findById(idInexistente))
@@ -154,20 +155,20 @@ public class BookServiceTest
     BookDTO expectedBook = new BookDTO(
       1L,
       "Fulano",
-      "As aventuras de...",
       LocalDate.of(2026, 1, 15),
-      75.25D
+      75.25D,
+      "As aventuras de..."
     );
 
     Book bookPersisted = new Book(
       1L,
       "Fulano",
-      "As aventuras de...",
       LocalDate.of(2026, 1, 15),
-      75.25D
+      75.25D,
+      "As aventuras de..."
     );
 
-    when(bookRepository.create(any(Book.class))).thenReturn(bookPersisted);
+    when(repository.save(any(Book.class))).thenReturn(bookPersisted);
 
     //When
     BookDTO actualBook = service.create(new BookDTO());
@@ -175,6 +176,7 @@ public class BookServiceTest
     //Then
     assertThat(actualBook)
       .usingRecursiveComparison()
+      .ignoringFields("links")
       .isEqualTo(expectedBook);
   }
 
@@ -183,30 +185,48 @@ public class BookServiceTest
   void deveRetornarLivroAtualizadoQuandoAtualizacaoOcorrerComSucesso()
   {
     //Given
-    BookDTO expectedBook = new BookDTO(
-      1L,
-      "Fulano",
-      "As aventuras de...",
-      LocalDate.of(2026, 1, 15),
-      75.25D
-    );
-
     Book bookPersisted = new Book(
       1L,
       "Fulano",
-      "As aventuras de...",
       LocalDate.of(2026, 1, 15),
-      75.25D
+      75.25D,
+      "As aventuras de..."
     );
 
-    when(bookRepository.update(any(Book.class))).thenReturn(bookPersisted);
+    Book bookUpdated = new Book(
+      1L,
+      "Beltrano",
+      LocalDate.of(2026, 1, 15),
+      80D,
+      "Uma historia sobre..."
+    );
+
+    BookDTO bookUpdatedDTO = new BookDTO(
+      1L,
+      "Beltrano",
+      LocalDate.of(2026, 1, 15),
+      80D,
+      "Uma historia sobre..."
+    );
+
+    BookDTO expectedBook = new BookDTO(
+      1L,
+      "Beltrano",
+      LocalDate.of(2026, 1, 15),
+      80D,
+      "Uma historia sobre..."
+    );
+
+    when(repository.findById(1L)).thenReturn(Optional.of(bookPersisted));
+    when(repository.save(any(Book.class))).thenReturn(bookUpdated);
 
     //When
-    BookDTO actualBook = service.update(new BookDTO());
+    BookDTO actualBook = service.update(bookUpdatedDTO);
 
     //Then
     assertThat(actualBook)
       .usingRecursiveComparison()
+      .ignoringFields("links")
       .isEqualTo(expectedBook);
   }
 }
