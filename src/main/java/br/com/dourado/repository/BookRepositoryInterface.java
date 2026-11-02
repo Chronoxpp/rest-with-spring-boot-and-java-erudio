@@ -10,4 +10,6 @@ public interface BookRepositoryInterface
   public List<Book> findAll();
 
   public Book findById(long id);
+
+  public Book create(Book book);
 }

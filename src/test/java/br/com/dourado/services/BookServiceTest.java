@@ -17,13 +17,12 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest
 {
-  // findAll, findById, create, update, delete
-
   @Mock
   private BookRepositoryInterface bookRepository;
 
@@ -145,5 +144,36 @@ public class BookServiceTest
     assertThatThrownBy(() -> service.findById(idInexistente))
       .isInstanceOf(ResourceNotFoundException.class)
       .hasMessage("Book not found.");
+  }
+
+  // findAll, findById, create, update, delete
+
+  @Test
+  @DisplayName("Deve retornar livro cadastrado quando cadastro ocorrer com sucesso")
+  void deveRetornarLivroCadastradoQuandoCadastroOcorrerComSucesso()
+  {
+    BookDTO expectedBook = new BookDTO(
+      1L,
+      "Fulano",
+      "As aventuras de...",
+      LocalDate.of(2026, 1, 15),
+      75.25D
+    );
+
+    Book bookPersisted = new Book(
+      1L,
+      "Fulano",
+      "As aventuras de...",
+      LocalDate.of(2026, 1, 15),
+      75.25D
+    );
+
+    when(bookRepository.create(any(Book.class))).thenReturn(bookPersisted);
+
+    BookDTO actualBook = service.create(new BookDTO());
+
+    assertThat(actualBook)
+      .usingRecursiveAssertion()
+      .isEqualTo(expectedBook);
   }
 }

@@ -35,4 +35,13 @@ public class BookService
 
     return parseObject(repository.findById(id), BookDTO.class);
   }
+
+  public BookDTO create(BookDTO bookDTO)
+  {
+    Book newBook = parseObject(bookDTO, Book.class);
+
+    Book persistedBook = repository.create(newBook);
+
+    return parseObject(persistedBook, BookDTO.class);
+  }
 }
